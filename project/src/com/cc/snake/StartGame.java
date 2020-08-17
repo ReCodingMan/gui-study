@@ -14,6 +14,5 @@ public class StartGame {
 
         // 正常游戏界面都应该在画板上
         jFrame.add(new GamePanel());
-
     }
 }
