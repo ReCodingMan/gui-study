@@ -2,9 +2,11 @@ package com.cc.snake;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 // 游戏的面板
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements KeyListener {
 
     //定义🐍的数据结构
     int length; // 🐍的长度
@@ -19,6 +21,9 @@ public class GamePanel extends JPanel {
      */
     public GamePanel() {
         init();
+        // 获得焦点和键盘事件
+        this.setFocusable(true); // 获取焦点事件
+        this.addKeyListener(this); // 获取键盘监听事件
     }
 
     /**
@@ -63,5 +68,36 @@ public class GamePanel extends JPanel {
             g.setFont(new Font("微软雅黑", Font.BOLD, 40));
             g.drawString("按下空格开始游戏",300,300);
         }
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    /**
+     * 键盘监听事件
+     * @param e
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        if (keyCode == KeyEvent.VK_SPACE) {
+            isStart = !isStart;
+            repaint();
+        }
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
