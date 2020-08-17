@@ -2,11 +2,13 @@ package com.cc.snake;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 // 游戏的面板
-public class GamePanel extends JPanel implements KeyListener {
+public class GamePanel extends JPanel implements ActionListener,KeyListener {
 
     //定义🐍的数据结构
     int length; // 🐍的长度
@@ -14,7 +16,7 @@ public class GamePanel extends JPanel implements KeyListener {
     int[] snakeY = new int[500]; // 🐍的y坐标 25*25
     String fx; // 方向
     // 当前游戏状态：开始，暂停
-    boolean isStart;
+    boolean isStart = false;
 
     /**
      * 构造器
@@ -26,6 +28,9 @@ public class GamePanel extends JPanel implements KeyListener {
         this.addKeyListener(this); // 获取键盘监听事件
     }
 
+    //定时器
+    Timer timer = new Timer(100,this); // 100毫秒执行一次
+
     /**
      * 初始化方法
      */
@@ -35,7 +40,7 @@ public class GamePanel extends JPanel implements KeyListener {
         snakeX[1] = 75;snakeY[1] = 100; // 第一个身体的位置
         snakeX[2] = 50;snakeY[2] = 100; // 第二个身体的位置
         fx = "R"; // 👉
-        isStart = false;
+        timer.start(); // 一开始就开启定时器
     }
 
     /**
@@ -71,12 +76,45 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     /**
-     *
+     * 事件监听 -- 需要通过固定事件来刷新，1s=10次
      * @param e
      */
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void actionPerformed(ActionEvent e) {
+        if (isStart) {// 如果开始状态，小蛇动起来
 
+            // 移动
+            for (int i=length-1; i>0; i--) {
+                snakeX[i] = snakeX[i-1];
+                snakeY[i] = snakeY[i-1];
+            }
+
+            // 走向
+            if (fx.equals("R")) {
+                snakeX[0] = snakeX[0]+25;
+                if (snakeX[0] > 850) {
+                    snakeX[0] = 25;
+                }
+            } else if (fx.equals("L")) {
+                snakeX[0] = snakeX[0]-25;
+                if (snakeX[0] < 25) {
+                    snakeX[0] = 850;
+                }
+            } else if (fx.equals("U")) {
+                snakeY[0] = snakeY[0]-25;
+                if (snakeY[0] < 75) {
+                    snakeY[0] = 650;
+                }
+            } else if (fx.equals("D")) {
+                snakeY[0] = snakeY[0]+25;
+                if (snakeY[0] > 650) {
+                    snakeY[0] = 75;
+                }
+            }
+
+            repaint();
+        }
+        timer.start();
     }
 
     /**
@@ -90,6 +128,17 @@ public class GamePanel extends JPanel implements KeyListener {
             isStart = !isStart;
             repaint();
         }
+
+        // 小蛇移动
+        if (keyCode == KeyEvent.VK_UP) {
+            fx = "U";
+        } else if (keyCode == KeyEvent.VK_DOWN) {
+            fx = "D";
+        } else if (keyCode == KeyEvent.VK_LEFT) {
+            fx = "L";
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
+            fx = "R";
+        }
     }
 
     /**
@@ -98,6 +147,15 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
+
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
 
     }
 }
